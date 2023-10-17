@@ -28,6 +28,7 @@ namespace WhiteLagoon.Web.Controllers
             } 
             if (ModelState.IsValid)
             {
+                TempData["success"] = "Villa created successfully";
                 _db.Villas.Add(obj);
                 _db.SaveChanges();
                 return RedirectToAction(nameof(Index));
@@ -40,6 +41,7 @@ namespace WhiteLagoon.Web.Controllers
             Villa? obj = _db.Villas.FirstOrDefault(x => x.Id == villaId);
             if(obj == null)
             {
+                TempData["error"] = "Could not find Villa";
                 return RedirectToAction("Error","Home");
             }
             return View(obj);
@@ -49,10 +51,12 @@ namespace WhiteLagoon.Web.Controllers
         {
             if (ModelState.IsValid && obj.Id > 0)
             {
+                TempData["success"] = "Villa updated successfully.";
                 _db.Villas.Update(obj);
                 _db.SaveChanges();
                 return RedirectToAction(nameof(Index));
             }
+            TempData["error"] = "Update failed.";
             return View(obj);
         }
         public IActionResult Delete(int villaId)
@@ -70,6 +74,7 @@ namespace WhiteLagoon.Web.Controllers
             var objFromDb = _db.Villas.FirstOrDefault(x=>x.Id ==  obj.Id);
             if (objFromDb is not null)
             {
+                TempData["success"] = "Villa deleted successfully.";
                 _db.Villas.Remove(objFromDb);
                 _db.SaveChanges();
                 return RedirectToAction(nameof(Index));
