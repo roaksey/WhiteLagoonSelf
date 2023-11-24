@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Principal;
+using WhiteLagoon.Application.Common.Infterfaces;
 using WhiteLagoon.Domain.Entities;
 using WhiteLagoon.Infrastructure.Data;
 using WhiteLagoon.Web.ViewModels;
@@ -10,19 +11,19 @@ namespace WhiteLagoon.Web.Views.Home
 {
     public class VillaNumberController : Controller
     {
-        private readonly ApplicationDbContext _db;
-        public VillaNumberController(ApplicationDbContext db)
+        private readonly IUnitOfWork _unitOfWork;
+        public VillaNumberController(IUnitOfWork unitOfWork)
         {
-            _db = db;
+            _unitOfWork = unitOfWork;
         }
         public IActionResult Index()
         {
-            var villaNumbers = _db.VillaNumbers.Include(x => x.Villa).ToList();
+            var villaNumbers = _unitOfWork.VillaNumber.GetAll(null,"Villa").ToList();
             return View(villaNumbers);
         }
         public IActionResult Create()
         {
-            //IEnumerable<SelectListItem> list = _db.Villas.Select(x => new SelectListItem
+            //IEnumerable<SelectListItem> list = _unitOfWork.Villas.Select(x => new SelectListItem
             //{
             //    Value = x.Id.ToString(),
             //    Text = x.Name
@@ -30,7 +31,7 @@ namespace WhiteLagoon.Web.Views.Home
             //ViewData["VillaList"] = list; 
             VillaNumberVM vm = new()
             {
-                VillaList = _db.Villas.Select(x => new SelectListItem
+                VillaList = _unitOfWork.Villa.GetAll().Select(x => new SelectListItem
                 {
                     Value = x.Id.ToString(),
                     Text = x.Name
@@ -42,12 +43,12 @@ namespace WhiteLagoon.Web.Views.Home
         [HttpPost]
         public IActionResult Create(VillaNumberVM obj)
         {
-            bool roomNumExist = _db.VillaNumbers.Any(x => x.Villa_Number == obj.VillaNumber.Villa_Number);
+            bool roomNumExist = _unitOfWork.VillaNumber.GetAll().Any(x => x.Villa_Number == obj.VillaNumber.Villa_Number);
             //ModelState.Remove("Villa");
             if (ModelState.IsValid && !roomNumExist)
             {
-                _db.VillaNumbers.Add(obj.VillaNumber);
-                _db.SaveChanges();
+                _unitOfWork.VillaNumber.Add(obj.VillaNumber);
+                _unitOfWork.VillaNumber.Save();
                 TempData["success"] = "Villa Number has been created successfully.";
                 return RedirectToAction(nameof(Index));
             }
@@ -55,7 +56,7 @@ namespace WhiteLagoon.Web.Views.Home
             {
                 TempData["error"] = "Villa Number " + obj.VillaNumber.Villa_Number + " already exists.";
             }
-            obj.VillaList = _db.Villas.Select(x => new SelectListItem
+            obj.VillaList = _unitOfWork.Villa.GetAll().Select(x => new SelectListItem
             {
                 Value = x.Id.ToString(),
                 Text = x.Name
@@ -66,8 +67,8 @@ namespace WhiteLagoon.Web.Views.Home
         public IActionResult Update(int villaNumId)
         {
             VillaNumberVM model = new() {
-                VillaNumber = _db.VillaNumbers.FirstOrDefault(x => x.Villa_Number == villaNumId),
-                VillaList = _db.Villas.Select(x=> new SelectListItem { Value = x.Id.ToString(), Text = x.Name })   
+                VillaNumber = _unitOfWork.VillaNumber.Get(x => x.Villa_Number == villaNumId),
+                VillaList = _unitOfWork.Villa.GetAll().Select(x=> new SelectListItem { Value = x.Id.ToString(), Text = x.Name })   
             };
             if (model.VillaNumber is null)
             {
@@ -81,12 +82,12 @@ namespace WhiteLagoon.Web.Views.Home
         {
             if (ModelState.IsValid)
             {
-                _db.VillaNumbers.Update(model.VillaNumber);
-                _db.SaveChanges();
+                _unitOfWork.VillaNumber.Update(model.VillaNumber);
+                _unitOfWork.VillaNumber.Save();
                 TempData["success"] = "Villa Number updated successfully";
                 return RedirectToAction(nameof(Index));
             }
-            model.VillaList = _db.Villas.Select(x => new SelectListItem
+            model.VillaList = _unitOfWork.Villa.GetAll().Select(x => new SelectListItem
             {
                 Value = x.Id.ToString(),
                 Text = x.Name
@@ -97,8 +98,8 @@ namespace WhiteLagoon.Web.Views.Home
         {
             VillaNumberVM model = new()
             {
-                VillaNumber = _db.VillaNumbers.FirstOrDefault(x => x.Villa_Number == villaNumId),
-                VillaList = _db.Villas.Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name })
+                VillaNumber = _unitOfWork.VillaNumber.Get(x => x.Villa_Number == villaNumId),
+                VillaList = _unitOfWork.Villa.GetAll().Select(x => new SelectListItem { Value = x.Id.ToString(), Text = x.Name })
             };
             if (model.VillaNumber is null)
             {
@@ -111,12 +112,12 @@ namespace WhiteLagoon.Web.Views.Home
         [HttpPost]
         public IActionResult Delete(VillaNumberVM model)
         {
-            VillaNumber? objFromDb = _db.VillaNumbers
-                 .FirstOrDefault(u => u.Villa_Number == model.VillaNumber.Villa_Number);
+            VillaNumber? objFromDb = _unitOfWork.VillaNumber
+                 .Get(u => u.Villa_Number == model.VillaNumber.Villa_Number);
             if (objFromDb is not null)
             {
-                _db.VillaNumbers.Remove(objFromDb);
-                _db.SaveChanges();
+                _unitOfWork.VillaNumber.Remove(objFromDb);
+                _unitOfWork.VillaNumber.Save();
                 TempData["success"] = "The villa number has been deleted successfully.";
                 return RedirectToAction("Index");
             }
