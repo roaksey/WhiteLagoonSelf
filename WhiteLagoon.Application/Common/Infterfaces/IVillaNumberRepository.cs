@@ -10,6 +10,5 @@ namespace WhiteLagoon.Application.Common.Infterfaces
     public  interface IVillaNumberRepository  : IRepository<VillaNumber>
     {
         void Update(VillaNumber entity);
-        void Save();  
     }
 }

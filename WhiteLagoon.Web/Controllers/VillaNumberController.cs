@@ -18,7 +18,7 @@ namespace WhiteLagoon.Web.Views.Home
         }
         public IActionResult Index()
         {
-            var villaNumbers = _unitOfWork.VillaNumber.GetAll(null,"Villa").ToList();
+            var villaNumbers = _unitOfWork.VillaNumber.GetAll(includeProperties:"Villa").ToList();
             return View(villaNumbers);
         }
         public IActionResult Create()
@@ -43,12 +43,12 @@ namespace WhiteLagoon.Web.Views.Home
         [HttpPost]
         public IActionResult Create(VillaNumberVM obj)
         {
-            bool roomNumExist = _unitOfWork.VillaNumber.GetAll().Any(x => x.Villa_Number == obj.VillaNumber.Villa_Number);
+            bool roomNumExist = _unitOfWork.VillaNumber.Any(x => x.Villa_Number == obj.VillaNumber.Villa_Number);
             //ModelState.Remove("Villa");
             if (ModelState.IsValid && !roomNumExist)
             {
                 _unitOfWork.VillaNumber.Add(obj.VillaNumber);
-                _unitOfWork.VillaNumber.Save();
+                _unitOfWork.Save();
                 TempData["success"] = "Villa Number has been created successfully.";
                 return RedirectToAction(nameof(Index));
             }
@@ -83,7 +83,7 @@ namespace WhiteLagoon.Web.Views.Home
             if (ModelState.IsValid)
             {
                 _unitOfWork.VillaNumber.Update(model.VillaNumber);
-                _unitOfWork.VillaNumber.Save();
+                _unitOfWork.Save();
                 TempData["success"] = "Villa Number updated successfully";
                 return RedirectToAction(nameof(Index));
             }
@@ -117,7 +117,7 @@ namespace WhiteLagoon.Web.Views.Home
             if (objFromDb is not null)
             {
                 _unitOfWork.VillaNumber.Remove(objFromDb);
-                _unitOfWork.VillaNumber.Save();
+                _unitOfWork.Save();
                 TempData["success"] = "The villa number has been deleted successfully.";
                 return RedirectToAction("Index");
             }
