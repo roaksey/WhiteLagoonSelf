@@ -27,7 +27,7 @@ namespace WhiteLagoon.Web.Views.Home
             //{
             //    Value = x.Id.ToString(),
             //    Text = x.Name
-            //});
+            //});.
             //ViewData["VillaList"] = list; 
             VillaNumberVM vm = new()
             {
