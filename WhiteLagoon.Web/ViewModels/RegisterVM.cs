@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
 
 namespace WhiteLagoon.Web.ViewModels
 {
@@ -19,5 +21,8 @@ namespace WhiteLagoon.Web.ViewModels
         public string? RedirectUrl { get; set; }
         [Required]
         public string Name { get; set; }
+        public string? Role { get; set; }
+        [ValidateNever]
+        public IEnumerable<SelectListItem> RoleList { get; set; }
     }
 }
