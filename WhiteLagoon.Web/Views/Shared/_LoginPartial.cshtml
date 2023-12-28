@@ -7,7 +7,7 @@
     @if (SignInManager.IsSignedIn(User))
     {
         <li class="nav-item">
-            <a class="nav-link" asp-controller="Account" asp-action="Register">Hello, <b>@UserManager.GetUserName(User)</b></a>
+            <a class="nav-link" href="#">Hello, <b style="color:blueviolet;">@UserManager.GetUserName(User)</b></a>
         </li>
         <li class="nav-item">
             <a class="nav-link" asp-controller="Account" asp-action="Logout">Logout</a>
