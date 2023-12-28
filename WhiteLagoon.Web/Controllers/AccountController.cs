@@ -37,15 +37,17 @@ namespace WhiteLagoon.Web.Controllers
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
-        public IActionResult Register()
+        public IActionResult Register(string returnUrl = null)
         {
-            if(!_roleManager.RoleExistsAsync(SD.Role_Customer).GetAwaiter().GetResult()) {
+            returnUrl ??= Url.Content("~/");
+            if (!_roleManager.RoleExistsAsync(SD.Role_Customer).GetAwaiter().GetResult()) {
                 _roleManager.CreateAsync(new IdentityRole(SD.Role_Admin)).Wait();
                 _roleManager.CreateAsync(new IdentityRole(SD.Role_Customer)).Wait();
             }
             RegisterVM registerVM = new()
             {
-                RoleList = _roleManager.Roles.Select(x=> new SelectListItem() { Text = x.Name, Value = x.Name}) 
+                RoleList = _roleManager.Roles.Select(x=> new SelectListItem() { Text = x.Name, Value = x.Name}),
+                RedirectUrl = returnUrl
             };
             return View(registerVM);
         }
@@ -102,8 +104,9 @@ namespace WhiteLagoon.Web.Controllers
             if(ModelState.IsValid)
             {
                 var result = await _signInManager.PasswordSignInAsync(loginVm.Email,loginVm.Password,loginVm.RememberMe,lockoutOnFailure:false);
+
                 if(result.Succeeded)
-                {
+                {                  
                     if (string.IsNullOrEmpty(loginVm.RedirectUrl))
                     {
                         return RedirectToAction("Index", "Home");
