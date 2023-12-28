@@ -52,43 +52,46 @@ namespace WhiteLagoon.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterVM registerVM)
         {
-            ApplicationUser user = new()
+            if (ModelState.IsValid)
             {
-                Name = registerVM.Name,
-                Email = registerVM.Email,
-                PhoneNumber = registerVM.PhoneNumber,
-                NormalizedEmail = registerVM.Email.ToUpper(),
-                EmailConfirmed = true,
-                UserName = registerVM.Email,
-                CreatedAt = DateTime.Now
-            };
-            var result = await _userManager.CreateAsync(user, registerVM.Password);
-            if (result.Succeeded)
-            {
-                if (string.IsNullOrEmpty(registerVM.Role))
+                ApplicationUser user = new()
                 {
-                    await _userManager.AddToRoleAsync(user, SD.Role_Customer);
-                }
-                else
+                    Name = registerVM.Name,
+                    Email = registerVM.Email,
+                    PhoneNumber = registerVM.PhoneNumber,
+                    NormalizedEmail = registerVM.Email.ToUpper(),
+                    EmailConfirmed = true,
+                    UserName = registerVM.Email,
+                    CreatedAt = DateTime.Now
+                };
+                var result = await _userManager.CreateAsync(user, registerVM.Password);
+                if (result.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(user, registerVM.Role);
+                    if (string.IsNullOrEmpty(registerVM.Role))
+                    {
+                        await _userManager.AddToRoleAsync(user, SD.Role_Customer);
+                    }
+                    else
+                    {
+                        await _userManager.AddToRoleAsync(user, registerVM.Role);
+                    }
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    if (string.IsNullOrEmpty(registerVM.RedirectUrl))
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else
+                    {
+                        return LocalRedirect(registerVM.RedirectUrl);
+                    }
                 }
-                await _signInManager.SignInAsync(user, isPersistent: false);
-                if (string.IsNullOrEmpty(registerVM.RedirectUrl))
+                foreach (var error in result.Errors)
                 {
-                    return RedirectToAction("Index", "Home");
+                    ModelState.AddModelError("", error.Description);
                 }
-                else
-                {
-                    return LocalRedirect(registerVM.RedirectUrl);
-                }
-            }
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError("", error.Description);
             }
             registerVM.RoleList = _roleManager.Roles.Select(x => new SelectListItem() { Text = x.Name, Value = x.Name });
-
+    
             return View(registerVM);
         }
 

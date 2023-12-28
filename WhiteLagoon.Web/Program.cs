@@ -17,6 +17,10 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.AccessDeniedPath = "/Account/AccessDenied";
     options.LoginPath = "/Account/Login";
 });
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.Password.RequiredLength = 6;
+});
 builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
 
 var app = builder.Build();
