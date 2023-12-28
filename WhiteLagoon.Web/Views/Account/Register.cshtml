@@ -14,12 +14,12 @@
                     <form class="row" method="post">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <div class="form-floating mb-3 col-md-12">
-                            <input aspfor="Email" class="form-control" aria-required="true" />
+                            <input asp-for="Email" class="form-control" aria-required="true" />
                             <label asp-for="Email" class="ms-2 text-muted"></label>
                             <span asp-validation-for="Email" class="text-danger"></span>
                         </div>
                         <div class="form-floating mb-3 col-md-6">
-                            <input aspfor="Name" class="form-control" />
+                            <input asp-for="Name" class="form-control" />
                             <label asp-for="Name" class="ms-2 text-muted"></label>
                             <span asp-validation-for="Name" class="text-danger"></span>
                         </div>
