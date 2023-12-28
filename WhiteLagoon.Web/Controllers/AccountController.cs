@@ -117,5 +117,10 @@ namespace WhiteLagoon.Web.Controllers
             }
             return View(loginVm);
         }
+
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
     }
 }
