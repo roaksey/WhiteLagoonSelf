@@ -85,5 +85,31 @@ namespace WhiteLagoon.Web.Controllers
 
             return View(registerVM);
         }
+
+
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginVM loginVm)
+        {
+            if(ModelState.IsValid)
+            {
+                var result = await _signInManager.PasswordSignInAsync(loginVm.Email,loginVm.Password,loginVm.RememberMe,lockoutOnFailure:false);
+                if(result.Succeeded)
+                {
+                    if (string.IsNullOrEmpty(loginVm.RedirectUrl))
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else
+                    {
+                        return LocalRedirect(loginVm.RedirectUrl);
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Invalid login attempt.");
+                }
+            }
+            return View(loginVm);
+        }
     }
 }
