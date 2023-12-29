@@ -47,8 +47,8 @@
 
             <div class="col-4 col-md-2 pt-4 pr-2">
                 <div class="form-group">
-                    <button type="button" class="btn btn-success btn-block">
-                        <i class="bi bi-search"></i>  &nbsp; Check Availability
+                    <button type="submit" class="btn btn-success btn-block">
+                        <i class="bi bi-search"></i> Check Availability
                     </button>
 
                 </div>
@@ -59,8 +59,6 @@
             <div class="row px-lg-5 m-lg-4 m-sm-0 px-sm-0" style="--bs-gutter-x:0">
                 @foreach (var villa in Model.VillaList)
                 {
-
-
                     <div class="p-4 col-md-12 col-lg-6">
                         <div class="row" style="border-radius:5px; border: 1px solid #aaa">
                             <div class="col-4 p-2">
@@ -82,9 +80,21 @@
                             <div class="col-12">
                                 <div class="row pb-3 pt-2">
                                     <div class="col-4">
-                                        <a class="btn btn-success form-control btn-block">
-                                            Book
-                                        </a>
+                                        @if(Model.CheckInDate >= DateOnly.FromDateTime(DateTime.Now))
+                                        {
+                                            @if (villa.IsAvailable)
+                                            {
+                                                <a class="btn btn-success form-control btn-block">
+                                                    Book
+                                                </a>
+                                            }else
+                                            {
+                                                <a class="btn btn-outline-danger disabled form-control btn-block">
+                                                    Sold Out
+                                                </a>
+                                            }
+                                        }
+                                        
                                     </div>
                                     <div class="col-4">
                                         <span class="">Max Occupancy : @villa.Occupancy adults </span><br />
