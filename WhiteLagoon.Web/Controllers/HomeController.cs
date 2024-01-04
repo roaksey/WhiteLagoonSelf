@@ -25,19 +25,20 @@ namespace WhiteLagoon.Web.Controllers
             };
             return View(homwVm);
         }
+
+        //public IActionResult Index(HomeVM homeVm)
+        //{
+        //    homeVm.VillaList = _unitOfWork.Villa.GetAll(includeProperties: "VillaAmenity");
+        //    foreach (var villa in homeVm.VillaList)
+        //    {
+        //        if(villa.Id % 2 == 0)
+        //        {
+        //            villa.IsAvailable = false;
+        //        }
+        //    }
+        //    return View(homeVm);
+        //}
         [HttpPost]
-        public IActionResult Index(HomeVM homeVm)
-        {
-            homeVm.VillaList = _unitOfWork.Villa.GetAll(includeProperties: "VillaAmenity");
-            foreach (var villa in homeVm.VillaList)
-            {
-                if(villa.Id % 2 == 0)
-                {
-                    villa.IsAvailable = false;
-                }
-            }
-            return View(homeVm);
-        }
         public IActionResult GetVillasByDate(int nights,DateOnly checkInDate)
         {
             Thread.Sleep(3000);//To check spinner
