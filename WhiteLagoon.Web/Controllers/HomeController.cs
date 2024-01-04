@@ -41,7 +41,7 @@ namespace WhiteLagoon.Web.Controllers
         [HttpPost]
         public IActionResult GetVillasByDate(int nights,DateOnly checkInDate)
         {
-            Thread.Sleep(3000);//To check spinner
+            Thread.Sleep(2000);//To check spinner
             var villaList = _unitOfWork.Villa.GetAll(includeProperties: "VillaAmenity");
             foreach (var villa in villaList)
             {
