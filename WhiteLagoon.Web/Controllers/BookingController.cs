@@ -21,7 +21,8 @@ namespace WhiteLagoon.Web.Controllers
                 Nights = nights,
                 CheckOutDate = checkInDate.AddDays(nights)
             };
-            return View();
+            booking.TotalCost = booking.Villa.Price * nights;
+            return View(booking);
         }
     }
 }
