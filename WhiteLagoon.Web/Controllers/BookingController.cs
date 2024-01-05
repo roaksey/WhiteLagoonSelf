@@ -51,7 +51,7 @@ namespace WhiteLagoon.Web.Controllers
 
 
 
-            var domain = Request.Scheme+"://"+Request.Host.Value+"/";
+            var domain = Request.Scheme+"://"+Request.Host.Value;
             var options = new SessionCreateOptions
             {
                 LineItems = new List<SessionLineItemOptions>(),
@@ -76,6 +76,8 @@ namespace WhiteLagoon.Web.Controllers
 
             var service = new SessionService();
             Session session = service.Create(options);
+            _unitOfWork.Booking.UpdateStripePaymentId(booking.Id, session.Id, session.PaymentIntentId);
+            _unitOfWork.Save();
 
             Response.Headers.Add("Location", session.Url);
             return new StatusCodeResult(303);
