@@ -113,7 +113,7 @@ namespace WhiteLagoon.Web.Controllers
         #region API CALLs
         [HttpGet]
         [Authorize]
-        public IActionResult GetAll()
+        public IActionResult GetAll(string status)
         {
             IEnumerable<Booking> objBooking;
             if (User.IsInRole(SD.Role_Admin))
@@ -126,6 +126,10 @@ namespace WhiteLagoon.Web.Controllers
                 var userId = claimIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
 
                 objBooking = _unitOfWork.Booking.GetAll(u => u.UserId == userId, includeProperties: "User,Villa");
+            }
+            if(!string.IsNullOrEmpty(status))
+            {
+               objBooking = objBooking.Where(x=>x.Status.ToLower().Equals(status.ToLower()));
             }
             return Json(new {data=objBooking});
         }
