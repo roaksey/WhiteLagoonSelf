@@ -15,6 +15,10 @@ namespace WhiteLagoon.Web.Controllers
         {
             _unitOfWork = unitOfWork;   
         }
+        public IActionResult Index()
+        {
+            return View();
+        }
         [Authorize]
         public IActionResult FinalizeBooking(int villaId,DateOnly checkInDate,int nights)
         {
