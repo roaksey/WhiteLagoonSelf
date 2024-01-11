@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Stripe.Checkout;
+using System.Drawing;
 using System.Security.Claims;
 using WhiteLagoon.Application.Common.Infterfaces;
 using WhiteLagoon.Application.Common.Utility;
@@ -107,5 +108,26 @@ namespace WhiteLagoon.Web.Controllers
             }
             return View(bookingId);
         }
+
+        #region API CALLs
+        [HttpGet]
+        [Authorize]
+        public IActionResult GetAll()
+        {
+            IEnumerable<Booking> objBooking;
+            if (User.IsInRole(SD.Role_Admin))
+            {
+                objBooking = _unitOfWork.Booking.GetAll(includeProperties:"User,Villa");
+            }
+            else
+            {
+                var claimIdentity = (ClaimsIdentity)User.Identity;
+                var userId = claimIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+                objBooking = _unitOfWork.Booking.GetAll(u => u.UserId == userId, includeProperties: "User,Villa");
+            }
+            return Json(new {data=objBooking});
+        }
+        #endregion
     }
 }
