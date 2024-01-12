@@ -24,7 +24,7 @@ namespace WhiteLagoon.Application.Common.Utility
         {
             List<int> bookingInDate = new();
             var roomsInVilla = villaNumberList.Where(x => x.VillaId == villaId).Count();
-
+            int finalAvailableRoomForAllNights = int.MaxValue;
             for (int i = 0; i < nights; i++)
             {
                 var villasBooked = bookings.
@@ -38,10 +38,19 @@ namespace WhiteLagoon.Application.Common.Utility
                     }
                 }
                 var totalAvailableRooms = roomsInVilla - bookingInDate.Count;
-                if (totalAvailableRooms == 0)
-                    return 0;               
+                if (totalAvailableRooms == 0) { 
+                    return 0;   
+                }
+                else
+                {
+                    if(finalAvailableRoomForAllNights > totalAvailableRooms)
+                    {
+                        finalAvailableRoomForAllNights = totalAvailableRooms;
+                    }
+                }
+
             }
-            return 1;
+            return finalAvailableRoomForAllNights;
         }
     }
 }
