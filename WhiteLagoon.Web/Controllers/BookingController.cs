@@ -101,7 +101,7 @@ namespace WhiteLagoon.Web.Controllers
                     Session session = service.Get(bookingFromDb.StripeSessionId);
                     if(session.Status == "complete")
                     {
-                        _unitOfWork.Booking.UpdateStatus(bookingFromDb.Id, SD.StatusApproved);
+                        _unitOfWork.Booking.UpdateStatus(bookingFromDb.Id, SD.StatusApproved,0);
                         _unitOfWork.Booking.UpdateStripePaymentId(bookingFromDb.Id, session.Id, session.PaymentIntentId);
                         _unitOfWork.Save();
                     }
@@ -112,8 +112,31 @@ namespace WhiteLagoon.Web.Controllers
 
         [Authorize]
         public IActionResult BookingDetails(int bookingId) {
-            Booking booking = _unitOfWork.Booking.Get(x => x.Id == bookingId, includeProperties: "Villa,User");
-            return View(booking);
+            Booking bookingFromDb = _unitOfWork.Booking.Get(x => x.Id == bookingId, includeProperties: "Villa,User");
+
+            if(bookingFromDb.VillaNumber == 0 && bookingFromDb.Status == SD.StatusApproved)
+            {
+                var availableVillaNumber = AssignAvailableVillaNumberByVilla(bookingFromDb.VillaId);
+                bookingFromDb.VillaNumbers = _unitOfWork.VillaNumber.GetAll(u => u.VillaId == bookingFromDb.VillaId
+                && availableVillaNumber.Any(x => x == u.Villa_Number)).ToList();
+            }
+            return View(bookingFromDb);
+        }
+
+        private  List<int> AssignAvailableVillaNumberByVilla(int villaId)
+        {
+            List<int> availableVillaNumbers = new();
+            var villaNumbers = _unitOfWork.VillaNumber.GetAll(u=>u.VillaId  == villaId);
+            var checkedInVilla = _unitOfWork.Booking.GetAll(u => u.VillaId == villaId && u.Status == SD.StatusCheckedIn)
+                .Select(u=>u.VillaNumber);
+            foreach (var villaNumber in villaNumbers)
+            {
+                if (!checkedInVilla.Contains(villaNumber.Villa_Number))
+                {
+                    availableVillaNumbers.Add(villaNumber.Villa_Number);
+                }
+            }
+            return availableVillaNumbers;
         }
 
         #region API CALLs
