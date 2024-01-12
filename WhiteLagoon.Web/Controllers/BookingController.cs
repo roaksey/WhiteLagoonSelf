@@ -110,6 +110,12 @@ namespace WhiteLagoon.Web.Controllers
             return View(bookingId);
         }
 
+        [Authorize]
+        public IActionResult BookingDetails(int bookingId) {
+            Booking booking = _unitOfWork.Booking.Get(x => x.Id == bookingId, includeProperties: "Villa,User");
+            return View(booking);
+        }
+
         #region API CALLs
         [HttpGet]
         [Authorize]
@@ -127,7 +133,7 @@ namespace WhiteLagoon.Web.Controllers
 
                 objBooking = _unitOfWork.Booking.GetAll(u => u.UserId == userId, includeProperties: "User,Villa");
             }
-            if(!string.IsNullOrEmpty(status))
+            if(status != "null")
             {
                objBooking = objBooking.Where(x=>x.Status.ToLower().Equals(status.ToLower()));
             }
