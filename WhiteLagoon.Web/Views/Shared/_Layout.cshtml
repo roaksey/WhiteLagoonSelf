@@ -28,19 +28,26 @@
                             <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                        
-                        
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Content Management
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item text-white" asp-controller="Villa" asp-action="Index">Villa</a></li>
-                                <li><a class="dropdown-item" asp-controller="VillaNumber" asp-action="Index">Villa Number</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item text-white" asp-controller="Amenity" asp-action="Index">Amenity</a></li>
-                                <li><a class="dropdown-item text-white" asp-controller="Booking" asp-action="Index">Booking</a></li>
-                            </ul>
-                        </li>
+                        @if (User.IsInRole(SD.Role_Admin))
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Content Management
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item text-white" asp-controller="Villa" asp-action="Index">Villa</a></li>
+                                    <li><a class="dropdown-item" asp-controller="VillaNumber" asp-action="Index">Villa Number</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item text-white" asp-controller="Amenity" asp-action="Index">Amenity</a></li>
+                                    <li><a class="dropdown-item text-white" asp-controller="Booking" asp-action="Index">Booking</a></li>
+                                </ul>
+                            </li>
+                        }else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Booking" asp-action="Index">Manage Bookings</a>
+                            </li>
+                        }
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>
