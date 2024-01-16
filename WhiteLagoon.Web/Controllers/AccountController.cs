@@ -106,7 +106,12 @@ namespace WhiteLagoon.Web.Controllers
                 var result = await _signInManager.PasswordSignInAsync(loginVm.Email,loginVm.Password,loginVm.RememberMe,lockoutOnFailure:false);
 
                 if(result.Succeeded)
-                {                  
+                {
+                    var user = await _userManager.FindByEmailAsync(loginVm.Email);
+                    if(await _userManager.IsInRoleAsync(user, SD.Role_Admin))
+                    {
+                        return RedirectToAction("Index", "Dashboard");
+                    }
                     if (string.IsNullOrEmpty(loginVm.RedirectUrl))
                     {
                         return RedirectToAction("Index", "Home");
