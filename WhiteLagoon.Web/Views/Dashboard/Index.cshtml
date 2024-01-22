@@ -9,7 +9,7 @@
             <div class="card">
                 <div class="card-body">
                     <div class="float-end mt-2">
-                        <div id="totalBookingRadialChart"></div>
+                        <div id="totalBookingRadialChart" data-colors='["--bs-warning"]'></div>
                     </div>
                     <div>
                         <p class="text-muted mb-0">Total Bookings</p>
@@ -31,5 +31,6 @@
 </div>
 
 @section scripts{
+    <script src="~/js/dashboard/radialChart.js"></script>
     <script src="~/js/Dashboard/getTotalBookingRadial.js"></script>
 }
