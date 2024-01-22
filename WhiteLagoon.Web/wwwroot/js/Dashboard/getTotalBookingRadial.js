@@ -32,38 +32,22 @@ function loadTotalBookingRadialChart() {
 function loadRadialBarChart(id, data) {
     var options = {
         chart: {
-            height: 280,
+            height: 90,
+            width:90,
             type: "radialBar",
+            sparkline: {
+                enabled:true
+            },
+            offsetY:-10
         },
 
-        series: [67],
+        series: data.series,
         colors: ["#20E647"],
         plotOptions: {
             radialBar: {
-                hollow: {
-                    margin: 0,
-                    size: "70%",
-                    background: "#293450"
-                },
-                track: {
-                    dropShadow: {
-                        enabled: true,
-                        top: 2,
-                        left: 0,
-                        blur: 4,
-                        opacity: 0.15
-                    }
-                },
                 dataLabels: {
-                    name: {
-                        offsetY: -10,
-                        color: "#fff",
-                        fontSize: "13px"
-                    },
                     value: {
-                        color: "#fff",
-                        fontSize: "30px",
-                        show: true
+                        offsetY: -10,
                     }
                 }
             }
@@ -78,9 +62,9 @@ function loadRadialBarChart(id, data) {
             }
         },
         stroke: {
-            lineCap: "round"
+            
         },
-        labels: ["Progress"]
+        labels: [""]
     };
 
     var chart = new ApexCharts(document.querySelector('#'+id), options);
