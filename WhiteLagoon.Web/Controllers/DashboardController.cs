@@ -28,7 +28,7 @@ namespace WhiteLagoon.Web.Controllers
 
             return Json(GetRadialChartDataModel(totalBookings.Count(), countByCurrentMonth, countByPreviousMonth));
         }
-        public async Task<IActionResult> GetRevenueChartDataAsync()
+        public async Task<IActionResult> GetRevenueChartData()
         {
             var totalBookings = _unitOfWork.Booking.GetAll(u => u.Status == SD.StatusPending || u.Status == SD.StatusCancelled);
             var totalRevenue = Convert.ToInt32(totalBookings.Sum(x => x.TotalCost));
@@ -37,7 +37,7 @@ namespace WhiteLagoon.Web.Controllers
 
             return Json(GetRadialChartDataModel(totalRevenue, countByCurrentMonth, countByPreviousMonth));
         }
-        public async Task<IActionResult> GetRegisteredUserChartDataAsync()
+        public async Task<IActionResult> GetRegisteredUserChartData()
         {
             var totalUsers = _unitOfWork.User.GetAll();
             var countByCurrentMonth = totalUsers.Count(u => u.CreatedAt >= currentMonthStartDate && u.CreatedAt <= DateTime.Now);
