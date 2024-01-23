@@ -1,7 +1,7 @@
 ﻿<div class="container-fluid">
     <div class="row">
-    <div class="page-title-box d-flex align-items-center justify-content-between">
-        <h4 class="mb-0">Dashboard</h4>
+        <div class="page-title-box d-flex align-items-center justify-content-between">
+            <h4 class="mb-0">Dashboard</h4>
         </div>
     </div>
     <div class="row">
@@ -72,12 +72,40 @@
 
                 </div>
             </div>
+        </div>
+        <div class="col-md-12 col-xl-8 mt-2">
+            <div class="card">
+                <div class="card-body">
+                    <div class="justify-content-center chart-spinner" style="display:none">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Loading....</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 col-xl-4 mt-2">
+            <div class="card">
+                <div class="card-body">
+                    <div class="">
+                        <p class="text-muted mb-0">Customers Bookings</p>
+                    </div>
+                    <div id="customerBookingsPieChart" data-colors='["--bs-warning","--bs-primary"]'>
+                    </div>
+                    <div class="justify-content-center text-center chart-spinner" style="display:none">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
 
-@section scripts{
-    <script src="~/js/dashboard/radialChart.js"></script>
-    <script src="~/js/Dashboard/getTotalBookingRadial.js"></script>
-    <script src="~/js/Dashboard/getTotalUsersRadial.js"></script>
-    <script src="~/js/Dashboard/getTotalRevenueRadial.js"></script>
-}
+    @section scripts {
+        <script src="~/js/dashboard/radialChart.js"></script>
+        <script src="~/js/Dashboard/getTotalBookingRadial.js"></script>
+        <script src="~/js/Dashboard/getTotalUsersRadial.js"></script>
+        <script src="~/js/Dashboard/getTotalRevenueRadial.js"></script>
+        <script src="~/js/Dashboard/getCustomerBookingPieChart.js"></script>
+    }
