@@ -76,6 +76,11 @@
         <div class="col-md-12 col-xl-8 mt-2">
             <div class="card">
                 <div class="card-body">
+                    <div>
+                        <p class="text-muted mb-0">New Members And Bookings In Past 30 Days</p>
+                    </div>
+                    <div id="newMembersAndBookingsLineChart" data-colors='["--bs-warning","--bs-primary"]'>
+                    </div>
                     <div class="justify-content-center chart-spinner" style="display:none">
                         <div class="spinner-border" role="status">
                             <span class="visually-hidden">Loading....</span>
@@ -108,4 +113,5 @@
         <script src="~/js/Dashboard/getTotalUsersRadial.js"></script>
         <script src="~/js/Dashboard/getTotalRevenueRadial.js"></script>
         <script src="~/js/Dashboard/getCustomerBookingPieChart.js"></script>
+        <script src="~/js/dashboard/getCustomerAndBookingLineChart.js"></script>
     }
