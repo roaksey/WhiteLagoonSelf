@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Stripe.Checkout;
+using Syncfusion.DocIO;
+using Syncfusion.DocIO.DLS;
+using Syncfusion.DocIORenderer;
 using System.Drawing;
 using System.Security.Claims;
 using WhiteLagoon.Application.Common.Infterfaces;
@@ -12,9 +15,11 @@ namespace WhiteLagoon.Web.Controllers
     public class BookingController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
-        public BookingController(IUnitOfWork unitOfWork)
+        private readonly IWebHostEnvironment  _webHostEnvironment;
+        public BookingController(IUnitOfWork unitOfWork,IWebHostEnvironment webHostEnvironment)
         {
             _unitOfWork = unitOfWork;   
+            _webHostEnvironment = webHostEnvironment;   
         }
         [Authorize]
         public IActionResult Index()
@@ -179,6 +184,36 @@ namespace WhiteLagoon.Web.Controllers
             }
             return availableVillaNumbers;
         }
+
+        [HttpPost]
+        [Authorize]
+        public IActionResult GenerateInvoice(int id)
+        {
+            string basePath = _webHostEnvironment.WebRootPath;
+            WordDocument document = new WordDocument();
+
+            //Load the template
+            string dataPath = basePath + @"/exports/BookingDetails.docx";
+
+            using FileStream fileStream = new FileStream(dataPath,FileMode.Open,FileAccess.Read,FileShare.ReadWrite);
+            document.Open(fileStream, FormatType.Automatic);
+
+            //Update Template
+            Booking bookingFromDb = _unitOfWork.Booking.Get(u => u.Id == id, includeProperties: "Villa,User");
+
+            TextSelection textSelection = document.Find("xx_customer_name", false, true);
+            WTextRange textRange = textSelection.GetAsOneRange();
+            textRange.Text = bookingFromDb.Name;
+
+            using DocIORenderer renderer = new();
+
+            MemoryStream stream = new();
+            document.Save(stream, FormatType.Docx);
+            stream.Position = 0;
+
+            return File(stream, "application/docx", "BookingDetails.docx");
+        }
+
 
         #region API CALLs
         [HttpGet]
