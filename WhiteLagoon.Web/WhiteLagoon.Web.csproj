@@ -13,6 +13,10 @@
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0-preview.7.23375.4" />
     <PackageReference Include="Stripe.net" Version="43.9.0" />
+    <PackageReference Include="Syncfusion.DocIO.Net.Core" Version="24.1.47" />
+    <PackageReference Include="Syncfusion.DocIORenderer.Net.Core" Version="24.1.47" />
+    <PackageReference Include="Syncfusion.Licensing" Version="24.1.47" />
+    <PackageReference Include="Syncfusion.Pdf.Net.Core" Version="24.1.47" />
   </ItemGroup>
 
   <ItemGroup>
