@@ -228,7 +228,7 @@ namespace WhiteLagoon.Web.Controllers
             textRange.Text = bookingFromDb.CheckOutDate.ToShortDateString(); ;
             textSelection = document.Find("xx_booking_total", false, true);
             textRange = textSelection.GetAsOneRange();
-            textRange.Text = bookingFromDb.TotalCost.ToString(new System.Globalization.CultureInfo("en-US"));
+            textRange.Text = bookingFromDb.TotalCost.ToString("C", new System.Globalization.CultureInfo("en-US"));
 
             //Inserting Table in word document
             WTable table = new(document);
@@ -256,9 +256,26 @@ namespace WhiteLagoon.Web.Controllers
             row1.Cells[0].Width = 80;
             row1.Cells[1].AddParagraph().AppendText(bookingFromDb.Villa.Name);
             row1.Cells[1].Width = 220;
-            row1.Cells[2].AddParagraph().AppendText((bookingFromDb.TotalCost / bookingFromDb.Nights).ToString("c"));
-            row1.Cells[3].AddParagraph().AppendText(bookingFromDb.TotalCost.ToString("c"));
+            row1.Cells[2].AddParagraph().AppendText((bookingFromDb.TotalCost / bookingFromDb.Nights).ToString("C", new System.Globalization.CultureInfo("en-US")));
+            row1.Cells[3].AddParagraph().AppendText(bookingFromDb.TotalCost.ToString("C", new System.Globalization.CultureInfo("en-US")));
             row1.Cells[3].Width = 80;
+
+            //Add custom Style
+            WTableStyle tableStyle = document.AddTableStyle("CustomStyle") as WTableStyle;
+            tableStyle.TableProperties.RowStripe = 1;
+            tableStyle.TableProperties.ColumnStripe = 2;
+            tableStyle.TableProperties.Paddings.Top = 2;
+            tableStyle.TableProperties.Paddings.Bottom = 1;
+            tableStyle.TableProperties.Paddings.Left = 5.4f;
+            tableStyle.TableProperties.Paddings.Right = 5.4f;
+
+            ConditionalFormattingStyle firstRowStyle = tableStyle.ConditionalFormattingStyles.Add(ConditionalFormattingType.FirstRow);
+            firstRowStyle.CharacterFormat.Bold = true;
+            firstRowStyle.CharacterFormat.TextColor = Syncfusion.Drawing.Color.FromArgb(255, 255, 255, 255);
+            firstRowStyle.CellProperties.BackColor = Syncfusion.Drawing.Color.Black;
+
+            table.ApplyStyle("CustomStyle");
+
 
             TextBodyPart bodyPart = new(document);
             bodyPart.BodyItems.Add(table);
