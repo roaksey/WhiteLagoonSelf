@@ -4,6 +4,8 @@ using Stripe.Checkout;
 using Syncfusion.DocIO;
 using Syncfusion.DocIO.DLS;
 using Syncfusion.DocIORenderer;
+using Syncfusion.Pdf;
+using Syncfusion.Pdf.Interactive;
 using System.Drawing;
 using System.Security.Claims;
 using WhiteLagoon.Application.Common.Infterfaces;
@@ -187,7 +189,7 @@ namespace WhiteLagoon.Web.Controllers
 
         [HttpPost]
         [Authorize]
-        public IActionResult GenerateInvoice(int id, Color color)
+        public IActionResult GenerateInvoice(int id,string downloadType)
         {
             string basePath = _webHostEnvironment.WebRootPath;
             WordDocument document = new WordDocument();
@@ -287,10 +289,20 @@ namespace WhiteLagoon.Web.Controllers
             using DocIORenderer renderer = new();
 
             MemoryStream stream = new();
-            document.Save(stream, FormatType.Docx);
-            stream.Position = 0;
+            if (downloadType == "word")
+            {
+                document.Save(stream, FormatType.Docx);
+                stream.Position = 0;
 
-            return File(stream, "application/docx", "BookingDetails.docx");
+                return File(stream, "application/docx", "BookingDetails.docx");
+            }
+            else
+            {
+                PdfDocument pdfdDocument = renderer.ConvertToPDF(document);
+                pdfdDocument.Save(stream);
+                stream.Position = 0;
+                return File(stream, "application/pdf", "BookingDetails.pdf");
+            }
         }
 
 
