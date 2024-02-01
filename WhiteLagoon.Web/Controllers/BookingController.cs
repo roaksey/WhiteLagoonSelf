@@ -187,7 +187,7 @@ namespace WhiteLagoon.Web.Controllers
 
         [HttpPost]
         [Authorize]
-        public IActionResult GenerateInvoice(int id)
+        public IActionResult GenerateInvoice(int id, Color color)
         {
             string basePath = _webHostEnvironment.WebRootPath;
             WordDocument document = new WordDocument();
@@ -229,6 +229,42 @@ namespace WhiteLagoon.Web.Controllers
             textSelection = document.Find("xx_booking_total", false, true);
             textRange = textSelection.GetAsOneRange();
             textRange.Text = bookingFromDb.TotalCost.ToString(new System.Globalization.CultureInfo("en-US"));
+
+            //Inserting Table in word document
+            WTable table = new(document);
+
+            table.TableFormat.Borders.LineWidth = 1f;
+            table.TableFormat.Borders.Color = Syncfusion.Drawing.Color.Black;
+            table.TableFormat.Paddings.Top = 7f;
+            table.TableFormat.Paddings.Bottom = 7f;
+            table.TableFormat.Borders.Horizontal.LineWidth = 1f;
+
+            table.ResetCells(2, 4);
+
+            WTableRow row0 = table.Rows[0];
+
+            row0.Cells[0].AddParagraph().AppendText("NIGHTS");
+            row0.Cells[0].Width = 80;
+            row0.Cells[1].AddParagraph().AppendText("VILLA");
+            row0.Cells[1].Width = 220;
+            row0.Cells[2].AddParagraph().AppendText("PRICE PER NIGHT");
+            row0.Cells[3].AddParagraph().AppendText("TOTAL");
+            row0.Cells[3].Width = 80;
+
+            WTableRow row1 = table.Rows[1];
+            row1.Cells[0].AddParagraph().AppendText(bookingFromDb.Nights.ToString());
+            row1.Cells[0].Width = 80;
+            row1.Cells[1].AddParagraph().AppendText(bookingFromDb.Villa.Name);
+            row1.Cells[1].Width = 220;
+            row1.Cells[2].AddParagraph().AppendText((bookingFromDb.TotalCost / bookingFromDb.Nights).ToString("c"));
+            row1.Cells[3].AddParagraph().AppendText(bookingFromDb.TotalCost.ToString("c"));
+            row1.Cells[3].Width = 80;
+
+            TextBodyPart bodyPart = new(document);
+            bodyPart.BodyItems.Add(table);
+
+            document.Replace("<ADDTABLEHERE>", bodyPart, false, false);
+
 
 
             using DocIORenderer renderer = new();
