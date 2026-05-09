@@ -26,8 +26,8 @@ namespace WhiteLagoon.Domain.Entities
         public IFormFile? Image { get; set; }
         [Display(Name = "Image Url")]
         public string? ImageUrl { get; set; }
-        public DateTime? Created_Date { get; set; }
-        public DateTime? Updated_Date { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? UpdatedDate { get; set; }
 
         [ValidateNever]
         public IEnumerable<Amenity> VillaAmenity { get; set; }
